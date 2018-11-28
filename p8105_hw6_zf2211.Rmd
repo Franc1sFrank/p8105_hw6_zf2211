@@ -28,7 +28,8 @@ homicide <- read.csv("./data/homicide-data.csv")
 #Create a city_state variable
 homicide <- 
   homicide %>% 
-  mutate(city_state = str_c(city, ",", state))
+  mutate(city_state = str_c(city, ",", state)) %>% 
+  select(-city, -state)
 
 # remove city_state, solved is num. 
 homicide <- 
@@ -56,7 +57,7 @@ fit_logis <-
   filter(city_state == "Baltimore,MD") %>% 
   glm(solved ~ victim_age + victim_sex + victim_race, data = ., family = binomial()) 
 
-# obtain the estimate and confidence interval of the adjusted odds ratio
+# obtain the estimate and confidence interval of the adjusted odds ratio for Baltimore,MD
 tibble_left <-  
   fit_logis %>% 
   broom::tidy() %>% 
@@ -66,4 +67,26 @@ tibble_right = as_tibble(exp(confint.default(fit_logis)))
 cbind(tibble_left, tibble_right) %>% 
   knitr::kable(digits = 3)
 ```
+
+
+
+```{r}
+# run glm for every city
+
+glm_every <-  
+  homicide %>% 
+  group_by(city_state) %>% 
+  nest() %>% 
+  mutate(models = map(data, ~glm(solved ~ victim_age + victim_sex + victim_race, data = ., family = binomial())), 
+         results = map(.x = models, ~ broom::tidy(.x, exponentiate = TRUE, conf.int = TRUE))) %>% 
+  select(-data, -models) %>% 
+  unnest() %>% 
+  filter(term == "victim_racenon-white") %>% 
+  select(city_state, OR = estimate, conf.low, conf.high)
+  
+glm_every %>% 
+  head() %>% 
+  knitr::kable(digits = 3)
+```
+
 
