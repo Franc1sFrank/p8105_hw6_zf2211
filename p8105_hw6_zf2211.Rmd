@@ -122,5 +122,28 @@ For most of the cities, the estimates for odds ratio(OR) are below 1.0(1.0 are n
 
 ```{r}
 # read data
-bw <-  read_csv("./data/birthweight.csv")
+bwt <- read_csv("./data/birthweight.csv")
+```
+
+
+
+
+```{r}
+#tidy data
+bwt <-  
+  bwt %>% 
+  mutate(babysex = babysex -1, # male = 0, female = 1
+         babysex = as.factor(babysex),
+         frace = as.factor(frace),
+         malform = as.factor(malform),
+         mrace = as.factor(mrace))
+# missing values
+bwt[which(!complete.cases(bwt)),]           
+```
+
+```{r}
+# correlation matrix
+bwt %>% 
+  select(-babysex, -frace, -mrace, -malform) %>% 
+  cor()
 ```
