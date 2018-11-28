@@ -182,3 +182,11 @@ summary(mult.fit)
 Then the final model we obtain is `bw ~ babysex + bhead + blength  + gaweeks + mrace + wtgain + bhead*blength`(overall R-squared of 0.71 and the p-value of overall F test being significantly less than 0.05.)
 
 
+```{r}
+## plot residual vs. fitted values
+bwt %>% 
+  add_predictions(mult.fit) %>% 
+  add_residuals(mult.fit) %>% 
+  ggplot(aes(x = pred, y = resid)) +
+  geom_point(alpha = 0.5)
+```
