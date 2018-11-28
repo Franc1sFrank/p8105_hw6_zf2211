@@ -5,21 +5,22 @@ date: "11/25/2018"
 output: github_document
 ---
 
+
+
+```{r}
+# Load packages
+library(tidyverse)
+library(rvest)
+library(modelr)
+library(mgcv)
+```
+
 # Problem 1
 
 
-```{r}
-
-```
-
-
-
-
-# Problem 2
-
-
 
 ```{r}
-
+# read data
+homicide <- read.csv("./data/homicide-data.csv")
 ```
 
